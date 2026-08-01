@@ -114,7 +114,7 @@ export default function Home() {
         setCurrentUser({ 
           email: found.email, 
           username: found.username, 
-          isAdmin: found.isAdmin || found.email.toLowerCase() === "admin@kolkataguide.com" || found.email.toLowerCase() === "soumyasaha205@gmail.com" 
+          isAdmin: found.isAdmin || found.email.toLowerCase() === "epsitamaity629@gmail.com" || found.email.toLowerCase() === "soumyasaha205@gmail.com" 
         });
       }
     }
@@ -159,7 +159,7 @@ export default function Home() {
     const users = JSON.parse(localStorage.getItem("kolkata_guide_users") || "[]");
     const found = users.find((u: any) => u.email.toLowerCase() === authEmail.toLowerCase() && u.password === authPassword);
     if (found) {
-      const isAdmin = found.isAdmin || found.email.toLowerCase() === "admin@kolkataguide.com" || found.email.toLowerCase() === "soumyasaha205@gmail.com";
+      const isAdmin = found.isAdmin || found.email.toLowerCase() === "epsitamaity629@gmail.com" || found.email.toLowerCase() === "soumyasaha205@gmail.com";
       localStorage.setItem("kolkata_guide_session", found.email);
       setCurrentUser({ email: found.email, username: found.username, isAdmin });
       setAuthModal(null);
@@ -187,7 +187,7 @@ export default function Home() {
       setAuthError("Email is already registered.");
       return;
     }
-    const isAdmin = authEmail.toLowerCase() === "admin@kolkataguide.com" || authEmail.toLowerCase() === "soumyasaha205@gmail.com";
+    const isAdmin = authEmail.toLowerCase() === "epsitamaity629@gmail.com" || authEmail.toLowerCase() === "soumyasaha205@gmail.com";
     const newUser = { 
       email: authEmail, 
       password: authPassword, 
@@ -1148,7 +1148,7 @@ export default function Home() {
                     <div className="bg-white border border-[#E5E5E5] px-4 py-2.5 rounded-xl text-center shadow-sm">
                       <div className="text-[10px] uppercase font-bold text-[#888888]">Active Admins</div>
                       <div className="text-lg font-bold text-red-600">
-                        {adminUsers.filter((u: any) => u.isAdmin || u.email.toLowerCase() === "admin@kolkataguide.com" || u.email.toLowerCase() === "soumyasaha205@gmail.com").length}
+                        {adminUsers.filter((u: any) => u.isAdmin || u.email.toLowerCase() === "epsitamaity629@gmail.com" || u.email.toLowerCase() === "soumyasaha205@gmail.com").length}
                       </div>
                     </div>
                   </div>
@@ -1207,7 +1207,7 @@ export default function Home() {
                             })
                             .map((user: any) => {
                               const isSelf = user.email.toLowerCase() === currentUser?.email.toLowerCase();
-                              const isUserAdmin = user.isAdmin || user.email.toLowerCase() === "admin@kolkataguide.com" || user.email.toLowerCase() === "soumyasaha205@gmail.com";
+                              const isUserAdmin = user.isAdmin || user.email.toLowerCase() === "epsitamaity629@gmail.com" || user.email.toLowerCase() === "soumyasaha205@gmail.com";
 
                               return (
                                 <tr key={user.email} className="hover:bg-neutral-50/50 transition-colors">
