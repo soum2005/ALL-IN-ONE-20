@@ -19,16 +19,20 @@ import {
   ExternalLink,
   Check,
   Zap,
-  Navigation
+  Navigation,
+  Users,
+  Film
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { places, movieHalls, foodItems, Place } from "@/data/kolkataData";
 import { durgaPujas } from "@/data/durgaPujaData";
+import { upcomingMovies } from "@/data/upcomingMovies";
 
 interface UnifiedItem {
   id: string;
   name: string;
   category: 'places' | 'movies' | 'food' | 'puja';
+  type?: 'hall' | 'upcoming';
   description: string;
   nearestMetro: string;
   distanceFromMetro?: string;
@@ -69,6 +73,7 @@ export default function PlaceDetail({ params }: { params: Promise<{ id: string }
     })),
     ...movieHalls.map(m => ({
       ...m,
+      type: 'hall' as const,
       nearestBusStop: m.nearestBusStop || "Hazra / Exide crossing",
       metroFare: m.metroFare || "₹10 - ₹20",
       busFare: m.busFare || "₹10",
@@ -108,6 +113,33 @@ export default function PlaceDetail({ params }: { params: Promise<{ id: string }
       nearbyAttractions: [],
       image: "",
       zone: p.zone
+    })),
+    ...upcomingMovies.map(m => ({
+      id: m.id,
+      name: m.name,
+      category: 'movies' as const,
+      type: 'upcoming' as const,
+      description: m.description,
+      nearestMetro: `Language: ${m.language}`,
+      distanceFromMetro: "",
+      nearestBusStop: `Genre: ${m.genre}`,
+      metroFare: "",
+      busFare: "",
+      entryFee: `Releases: ${m.releaseDate}`,
+      openingTime: "",
+      closingTime: "",
+      closedDay: "None",
+      googleMapsUrl: "",
+      detailedRoute: [`Cast: ${m.cast.join(", ")}`],
+      importantTips: [
+        `Language: ${m.language}`,
+        `Genre: ${m.genre}`,
+        `Release Date: ${m.releaseDate}`,
+        `Starring: ${m.cast.join(", ")}`
+      ],
+      nearbyAttractions: [],
+      image: "",
+      zone: m.language
     }))
   ];
 
@@ -208,7 +240,13 @@ export default function PlaceDetail({ params }: { params: Promise<{ id: string }
         {/* Cover & Title */}
         <section className="space-y-4">
           <div className="inline-block bg-[#F5F5F5] text-black px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border border-[#E5E5E5]/50">
-            {item.category === "places" ? "📍 Place Details" : item.category === "movies" ? "🎬 Movie Hall" : item.category === "food" ? "🍽 Food Spot" : `🪔 Durga Puja • ${item.zone}`}
+            {item.category === "places" 
+              ? "📍 Place Details" 
+              : item.category === "movies" 
+                ? (item.type === "upcoming" ? `🎬 Upcoming • ${item.zone}` : "🎬 Movie Hall") 
+                : item.category === "food" 
+                  ? "🍽 Food Spot" 
+                  : `🪔 Durga Puja • ${item.zone}`}
           </div>
 
           <div className="space-y-3">
@@ -227,186 +265,245 @@ export default function PlaceDetail({ params }: { params: Promise<{ id: string }
         <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
           
           {/* Quick Details Table */}
-          <div className="md:col-span-1 space-y-6 bg-[#F5F5F5] p-6 rounded-2xl border border-[#E5E5E5]/50">
-            <h3 className="font-bold text-sm uppercase tracking-wider text-black flex items-center gap-1.5 border-b border-[#E5E5E5] pb-3">
-              <Info className="w-4 h-4" />
-              Visitor Information
-            </h3>
-            
-            <div className="space-y-4 text-sm">
-              {/* Timings */}
-              <div className="space-y-1">
-                <span className="text-xs text-[#666666] font-semibold block">Opening Hours</span>
-                <span className="text-black font-medium">
-                  {item.openingTime}
-                  {item.closingTime && ` - ${item.closingTime}`}
-                </span>
-              </div>
-
-              {/* Weekly Closed */}
-              <div className="space-y-1">
-                <span className="text-xs text-[#666666] font-semibold block">Weekly Closed Day</span>
-                <span className={`inline-block px-2 py-0.5 text-xs font-bold rounded ${
-                  item.closedDay !== "None" ? "bg-black text-white" : "bg-[#E5E5E5] text-black"
-                }`}>
-                  {item.closedDay === "None" ? "Open Every Day" : item.closedDay}
-                </span>
-              </div>
-
-              {/* Entry Fee */}
-              <div className="space-y-1">
-                <span className="text-xs text-[#666666] font-semibold block">Entry Fee / Cost</span>
-                <span className="text-black font-semibold">{item.entryFee}</span>
-              </div>
-
-              {/* Planetarium special schedules */}
-              {item.id === "birla-planetarium" && item.extraDetails?.showTimings && (
-                <div className="pt-2 border-t border-[#E5E5E5] space-y-2">
-                  <span className="text-xs text-[#666666] font-semibold block">Show Schedules</span>
-                  <div className="space-y-2 text-xs">
-                    {item.extraDetails.showTimings.map((show, idx) => (
-                      <div key={idx} className="flex justify-between border-b border-[#E5E5E5]/50 pb-1">
-                        <span className="font-bold">{show.lang}</span>
-                        <span className="text-[#666666]">{show.times.join(", ")}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Transit and Fares */}
-          <div className="md:col-span-2 space-y-6">
-            <h3 className="font-bold text-sm uppercase tracking-wider text-black flex items-center gap-1.5 border-b border-[#F5F5F5] pb-3">
-              <Zap className="w-4 h-4" />
-              Transit & Fares
-            </h3>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {item.type === "upcoming" ? (
+            <div className="md:col-span-1 space-y-6 bg-[#F5F5F5] p-6 rounded-2xl border border-[#E5E5E5]/50">
+              <h3 className="font-bold text-sm uppercase tracking-wider text-black flex items-center gap-1.5 border-b border-[#E5E5E5] pb-3">
+                <Info className="w-4 h-4" />
+                Movie Information
+              </h3>
               
-              {/* Metro Box */}
-              <div className="border border-[#E5E5E5] p-5 rounded-xl space-y-2.5">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-black text-white flex items-center justify-center">
-                    <Train className="w-4 h-4" />
-                  </div>
-                  <span className="font-bold text-sm">Metro Transit</span>
+              <div className="space-y-4 text-sm">
+                <div className="space-y-1">
+                  <span className="text-xs text-[#666666] font-semibold block">Language</span>
+                  <span className="text-black font-semibold">{item.zone}</span>
                 </div>
-                <div className="space-y-1 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-[#666666]">Nearest Station</span>
-                    <span className="font-semibold">{item.nearestMetro}</span>
-                  </div>
-                  {item.distanceFromMetro && (
-                    <div className="flex justify-between">
-                      <span className="text-[#666666]">Distance</span>
-                      <span className="font-medium">{item.distanceFromMetro}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between border-t border-[#F5F5F5] pt-1 mt-1">
-                    <span className="text-[#666666]">Estimated Fare</span>
-                    <span className="font-semibold text-black">{item.metroFare || "₹10 - ₹25"}</span>
-                  </div>
+                
+                <div className="space-y-1">
+                  <span className="text-xs text-[#666666] font-semibold block">Genre</span>
+                  <span className="text-black font-medium">{item.nearestBusStop?.replace("Genre: ", "")}</span>
+                </div>
+                
+                <div className="space-y-1">
+                  <span className="text-xs text-[#666666] font-semibold block">Release Date</span>
+                  <span className="text-black font-semibold text-xs inline-block px-2.5 py-1 bg-black text-white rounded">
+                    {item.entryFee.replace("Releases: ", "")}
+                  </span>
                 </div>
               </div>
-
-              {/* Bus Box */}
-              <div className="border border-[#E5E5E5] p-5 rounded-xl space-y-2.5">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-[#F5F5F5] text-black flex items-center justify-center border border-[#E5E5E5]">
-                    <Bus className="w-4 h-4" />
-                  </div>
-                  <span className="font-bold text-sm">Bus Transit</span>
-                </div>
-                <div className="space-y-1 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-[#666666]">Nearest Stop</span>
-                    <span className="font-semibold text-right max-w-[150px] truncate" title={item.nearestBusStop}>{item.nearestBusStop}</span>
-                  </div>
-                  <div className="flex justify-between border-t border-[#F5F5F5] pt-1 mt-1">
-                    <span className="text-[#666666]">Estimated Fare</span>
-                    <span className="font-semibold text-black">{item.busFare || "₹10 - ₹15"}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Auto Rickshaw box (if available) */}
-              {item.autoFare && (
-                <div className="sm:col-span-2 border border-[#E5E5E5] p-5 rounded-xl flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-[#F5F5F5] text-black flex items-center justify-center border border-[#E5E5E5] text-xs font-bold">
-                      A
-                    </div>
-                    <div>
-                      <span className="font-bold text-sm block">Auto Rickshaw</span>
-                      <span className="text-[10px] text-[#666666]">Alternative local feeder transit</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[10px] text-[#666666] block">Feeder Fare</span>
-                    <span className="font-bold text-sm text-black">{item.autoFare}</span>
-                  </div>
-                </div>
-              )}
             </div>
+          ) : (
+            <div className="md:col-span-1 space-y-6 bg-[#F5F5F5] p-6 rounded-2xl border border-[#E5E5E5]/50">
+              <h3 className="font-bold text-sm uppercase tracking-wider text-black flex items-center gap-1.5 border-b border-[#E5E5E5] pb-3">
+                <Info className="w-4 h-4" />
+                Visitor Information
+              </h3>
+              
+              <div className="space-y-4 text-sm">
+                {/* Timings */}
+                <div className="space-y-1">
+                  <span className="text-xs text-[#666666] font-semibold block">Opening Hours</span>
+                  <span className="text-black font-medium">
+                    {item.openingTime}
+                    {item.closingTime && ` - ${item.closingTime}`}
+                  </span>
+                </div>
 
-            {/* Detailed Directions */}
-            <div className="space-y-4">
-              <h4 className="font-bold text-sm text-black flex items-center gap-1.5">
-                <Navigation className="w-3.5 h-3.5" />
-                Step-by-Step Directions
-              </h4>
-              <div className="space-y-3 pl-2">
-                {item.detailedRoute.map((routeStep, index) => (
-                  <div key={index} className="flex gap-3 text-xs leading-relaxed text-[#666666]">
-                    <span className="w-5 h-5 rounded-full bg-black text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">
-                      {index + 1}
+                {/* Weekly Closed */}
+                <div className="space-y-1">
+                  <span className="text-xs text-[#666666] font-semibold block">Weekly Closed Day</span>
+                  <span className={`inline-block px-2 py-0.5 text-xs font-bold rounded ${
+                    item.closedDay !== "None" ? "bg-black text-white" : "bg-[#E5E5E5] text-black"
+                  }`}>
+                    {item.closedDay === "None" ? "Open Every Day" : item.closedDay}
+                  </span>
+                </div>
+
+                {/* Entry Fee */}
+                <div className="space-y-1">
+                  <span className="text-xs text-[#666666] font-semibold block">Entry Fee / Cost</span>
+                  <span className="text-black font-semibold">{item.entryFee}</span>
+                </div>
+
+                {/* Planetarium special schedules */}
+                {item.id === "birla-planetarium" && item.extraDetails?.showTimings && (
+                  <div className="pt-2 border-t border-[#E5E5E5] space-y-2">
+                    <span className="text-xs text-[#666666] font-semibold block">Show Schedules</span>
+                    <div className="space-y-2 text-xs">
+                      {item.extraDetails.showTimings.map((show, idx) => (
+                        <div key={idx} className="flex justify-between border-b border-[#E5E5E5]/50 pb-1">
+                          <span className="font-bold">{show.lang}</span>
+                          <span className="text-[#666666]">{show.times.join(", ")}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Transit and Fares OR Synopsis & Cast */}
+          {item.type === "upcoming" ? (
+            <div className="md:col-span-2 space-y-6">
+              <h3 className="font-bold text-sm uppercase tracking-wider text-black flex items-center gap-1.5 border-b border-[#F5F5F5] pb-3">
+                <Film className="w-4 h-4" />
+                Synopsis & Cast
+              </h3>
+              
+              <div className="space-y-4 text-sm leading-relaxed text-[#666666]">
+                <p>{item.description}</p>
+              </div>
+
+              {/* Cast members */}
+              <div className="space-y-4 pt-4 border-t border-[#F5F5F5]">
+                <h4 className="font-bold text-sm text-black flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5" />
+                  Starring Cast
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {item.detailedRoute[0]?.replace("Cast: ", "").split(", ").map((actor, idx) => (
+                    <span key={idx} className="px-3.5 py-2 bg-white border border-[#E5E5E5] rounded-xl text-xs font-semibold text-black shadow-sm/5">
+                      {actor}
                     </span>
-                    <p className="mt-0.5">{routeStep}</p>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="md:col-span-2 space-y-6">
+              <h3 className="font-bold text-sm uppercase tracking-wider text-black flex items-center gap-1.5 border-b border-[#F5F5F5] pb-3">
+                <Zap className="w-4 h-4" />
+                Transit & Fares
+              </h3>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                {/* Metro Box */}
+                <div className="border border-[#E5E5E5] p-5 rounded-xl space-y-2.5">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full bg-black text-white flex items-center justify-center">
+                      <Train className="w-4 h-4" />
+                    </div>
+                    <span className="font-bold text-sm">Metro Transit</span>
+                  </div>
+                  <div className="space-y-1 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-[#666666]">Nearest Station</span>
+                      <span className="font-semibold">{item.nearestMetro}</span>
+                    </div>
+                    {item.distanceFromMetro && (
+                      <div className="flex justify-between">
+                        <span className="text-[#666666]">Distance</span>
+                        <span className="font-medium">{item.distanceFromMetro}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between border-t border-[#F5F5F5] pt-1 mt-1">
+                      <span className="text-[#666666]">Estimated Fare</span>
+                      <span className="font-semibold text-black">{item.metroFare || "₹10 - ₹25"}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bus Box */}
+                <div className="border border-[#E5E5E5] p-5 rounded-xl space-y-2.5">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full bg-[#F5F5F5] text-black flex items-center justify-center border border-[#E5E5E5]">
+                      <Bus className="w-4 h-4" />
+                    </div>
+                    <span className="font-bold text-sm">Bus Transit</span>
+                  </div>
+                  <div className="space-y-1 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-[#666666]">Nearest Stop</span>
+                      <span className="font-semibold text-right max-w-[150px] truncate" title={item.nearestBusStop}>{item.nearestBusStop}</span>
+                    </div>
+                    <div className="flex justify-between border-t border-[#F5F5F5] pt-1 mt-1">
+                      <span className="text-[#666666]">Estimated Fare</span>
+                      <span className="font-semibold text-black">{item.busFare || "₹10 - ₹15"}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Auto Rickshaw box (if available) */}
+                {item.autoFare && (
+                  <div className="sm:col-span-2 border border-[#E5E5E5] p-5 rounded-xl flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full bg-[#F5F5F5] text-black flex items-center justify-center border border-[#E5E5E5] text-xs font-bold">
+                        A
+                      </div>
+                      <div>
+                        <span className="font-bold text-sm block">Auto Rickshaw</span>
+                        <span className="text-[10px] text-[#666666]">Alternative local feeder transit</span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-[10px] text-[#666666] block">Feeder Fare</span>
+                      <span className="font-bold text-sm text-black">{item.autoFare}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Detailed Directions */}
+              <div className="space-y-4">
+                <h4 className="font-bold text-sm text-black flex items-center gap-1.5">
+                  <Navigation className="w-3.5 h-3.5" />
+                  Step-by-Step Directions
+                </h4>
+                <div className="space-y-3 pl-2">
+                  {item.detailedRoute.map((routeStep, index) => (
+                    <div key={index} className="flex gap-3 text-xs leading-relaxed text-[#666666]">
+                      <span className="w-5 h-5 rounded-full bg-black text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">
+                        {index + 1}
+                      </span>
+                      <p className="mt-0.5">{routeStep}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </section>
 
-        <hr className="border-[#F5F5F5]" />
+        {/* Embedded Map section (only for physical locations) */}
+        {item.type !== "upcoming" && (
+          <>
+            <hr className="border-[#F5F5F5]" />
+            <section className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="font-bold text-sm uppercase tracking-wider text-black flex items-center gap-1.5">
+                  <MapPin className="w-4 h-4" />
+                  Location Map
+                </h3>
+                <a 
+                  href={item.googleMapsUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs font-bold hover:underline"
+                >
+                  <span>Open in Google Maps</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
 
-        {/* Embedded Map section */}
-        <section className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="font-bold text-sm uppercase tracking-wider text-black flex items-center gap-1.5">
-              <MapPin className="w-4 h-4" />
-              Location Map
-            </h3>
-            <a 
-              href={item.googleMapsUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-xs font-bold hover:underline"
-            >
-              <span>Open in Google Maps</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-          </div>
-
-          <div className="aspect-[21/9] w-full bg-[#F5F5F5] rounded-2xl overflow-hidden border border-[#E5E5E5]">
-            <iframe
-              src={`https://maps.google.com/maps?q=${encodeURIComponent(item.name + ", Kolkata")}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen={true}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title={item.name}
-            ></iframe>
-          </div>
-        </section>
+              <div className="aspect-[21/9] w-full bg-[#F5F5F5] rounded-2xl overflow-hidden border border-[#E5E5E5]">
+                <iframe
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(item.name + ", Kolkata")}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen={true}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title={item.name}
+                ></iframe>
+              </div>
+            </section>
+          </>
+        )}
 
         {/* Tips & Nearby Attractions */}
-        {(item.importantTips && item.importantTips.length > 0) || (item.nearbyAttractions && item.nearbyAttractions.length > 0) ? (
+        {item.type !== "upcoming" && ((item.importantTips && item.importantTips.length > 0) || (item.nearbyAttractions && item.nearbyAttractions.length > 0)) ? (
           <>
             <hr className="border-[#F5F5F5]" />
             <section className="grid grid-cols-1 md:grid-cols-2 gap-8">

@@ -40,6 +40,7 @@ interface UnifiedItem {
   id: string;
   name: string;
   category: 'places' | 'movies' | 'food' | 'puja';
+  type?: 'hall' | 'upcoming';
   description: string;
   nearestMetro: string;
   distanceFromMetro?: string;
@@ -427,6 +428,7 @@ export default function Home() {
     })),
     ...movieHalls.map(m => ({
       ...m,
+      type: 'hall' as const,
       nearestBusStop: m.nearestBusStop || "Hazra / Exide crossing",
       metroFare: m.metroFare || "₹10 - ₹20",
       busFare: m.busFare || "₹10",
@@ -466,6 +468,33 @@ export default function Home() {
       nearbyAttractions: [],
       image: "",
       zone: p.zone
+    })),
+    ...upcomingMovies.map(m => ({
+      id: m.id,
+      name: m.name,
+      category: 'movies' as const,
+      type: 'upcoming' as const,
+      description: m.description,
+      nearestMetro: `Language: ${m.language}`,
+      distanceFromMetro: "",
+      nearestBusStop: `Genre: ${m.genre}`,
+      metroFare: "",
+      busFare: "",
+      entryFee: `Releases: ${m.releaseDate}`,
+      openingTime: "",
+      closingTime: "",
+      closedDay: "None",
+      googleMapsUrl: "",
+      detailedRoute: [`Cast: ${m.cast.join(", ")}`],
+      importantTips: [
+        `Language: ${m.language}`,
+        `Genre: ${m.genre}`,
+        `Release Date: ${m.releaseDate}`,
+        `Starring: ${m.cast.join(", ")}`
+      ],
+      nearbyAttractions: [],
+      image: "",
+      zone: m.language
     }))
   ];
 
@@ -473,10 +502,13 @@ export default function Home() {
   const filteredItems = unifiedItems.filter(item => {
     // 1. Category Tab Filter
     if (activeTab === "places" && item.category !== "places") return false;
-    if (activeTab === "movies" && item.category !== "movies") return false;
+    if (activeTab === "movies" && (item.category !== "movies" || item.type === "upcoming")) return false;
     if (activeTab === "food" && item.category !== "food") return false;
     if (activeTab === "puja" && item.category !== "puja") return false;
     if (activeTab === "favorites" && !favorites.includes(item.id)) return false;
+
+    // Exclude upcoming from "all" guides view by default (so it doesn't clutter) unless there is a search query
+    if (activeTab === "all" && item.type === "upcoming" && searchQuery.trim() === "") return false;
 
     // 2. Zone Filter (Durga Pujas only)
     if (activeTab === "puja" && selectedZone !== "all" && item.zone !== selectedZone) return false;
@@ -539,6 +571,150 @@ export default function Home() {
   const toggleFilter = (key: keyof typeof filters) => {
     setFilters(prev => ({ ...prev, [key]: !prev[key] }));
   };
+
+  const isBreakfastItem = (item: UnifiedItem) => {
+    return item.category === "food" && [
+      "chinese-paratha",
+      "putiram-sweets",
+      "adi-haridas-modak",
+      "nandalal-ghosh-sons"
+    ].includes(item.id);
+  };
+
+  const renderCard = (item: UnifiedItem) => (
+    <motion.div
+      layout
+      key={item.id}
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.2 }}
+      className="group bg-white border border-[#E5E5E5] rounded-2xl overflow-hidden hover:shadow-lg transition-all flex flex-col h-full"
+    >
+      {/* Card Content */}
+      <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+        <div className="space-y-4">
+          {/* Category Badge & Favorite Button */}
+          <div className="flex justify-between items-center">
+            <span className="bg-[#F5F5F5] text-black px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border border-[#E5E5E5]/50">
+              {item.category === "places" 
+                ? "📍 Place" 
+                : item.category === "movies" 
+                  ? (item.type === "upcoming" ? `🎬 Upcoming • ${item.zone}` : "🎬 Movie Hall") 
+                  : item.category === "food" 
+                    ? "🍽 Food" 
+                    : `🪔 Puja • ${item.zone}`}
+            </span>
+            <button
+              onClick={() => toggleFavorite(item.id)}
+              className="w-8 h-8 bg-[#F5F5F5] rounded-full flex items-center justify-center border border-[#E5E5E5]/50 hover:bg-[#E5E5E5] transition-all text-black"
+              aria-label="Toggle Favorite"
+            >
+              <Heart className={`w-4 h-4 ${favorites.includes(item.id) ? "fill-black text-black" : "text-[#666666]"}`} />
+            </button>
+          </div>
+
+          <div className="space-y-1">
+            <h3 className="text-xl font-bold tracking-tight text-black group-hover:underline decoration-1 underline-offset-2">
+              {item.name}
+            </h3>
+            <p className="text-xs text-[#666666] line-clamp-3 leading-relaxed">
+              {item.description}
+            </p>
+          </div>
+        </div>
+
+        {/* Metadata Rows */}
+        <div className="space-y-2 pt-2 border-t border-[#F5F5F5] text-xs">
+          {/* Metro */}
+          <div className="flex items-start gap-2.5">
+            <Train className="w-3.5 h-3.5 text-black mt-0.5 flex-shrink-0" />
+            <div>
+              <span className="font-semibold text-black">Metro: </span>
+              <span className="text-[#666666]">{item.nearestMetro}</span>
+              {item.distanceFromMetro && (
+                <span className="text-[10px] bg-[#F5F5F5] text-black px-1.5 py-0.5 rounded-full ml-1.5 font-medium whitespace-nowrap">
+                  {item.distanceFromMetro}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Bus */}
+          {item.nearestBusStop && (
+            <div className="flex items-start gap-2.5">
+              <Bus className="w-3.5 h-3.5 text-black mt-0.5 flex-shrink-0" />
+              <div>
+                <span className="font-semibold text-black">Bus: </span>
+                <span className="text-[#666666]">{item.nearestBusStop}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Fee */}
+          <div className="flex items-start gap-2.5">
+            <DollarSign className="w-3.5 h-3.5 text-black mt-0.5 flex-shrink-0" />
+            <div>
+              <span className="font-semibold text-black">Entry/Price: </span>
+              <span className="text-[#666666]">{item.entryFee}</span>
+            </div>
+          </div>
+
+          {/* Timings & Closed */}
+          <div className="flex items-start gap-2.5">
+            <Clock className="w-3.5 h-3.5 text-black mt-0.5 flex-shrink-0" />
+            <div>
+              <span className="font-semibold text-black">Hours: </span>
+              <span className="text-[#666666]">
+                {item.openingTime}
+                {item.closingTime && ` - ${item.closingTime}`}
+              </span>
+              {item.closedDay !== "None" && (
+                <span className="text-[10px] bg-black text-white px-1.5 py-0.5 rounded ml-1.5 font-bold uppercase">
+                  {item.closedDay} Closed
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-2 pt-2">
+          <Link 
+            href={`/place/${item.id}`} 
+            className="flex-1 bg-black text-white text-xs font-semibold py-2.5 px-4 rounded-lg flex items-center justify-center gap-1.5 hover:bg-black/90 active:scale-98 transition-all"
+          >
+            <span>Route Details</span>
+            <ArrowRight className="w-3 h-3" />
+          </Link>
+          
+          <button
+            onClick={(e) => handleShare(item.id, e)}
+            className="w-10 h-10 border border-[#E5E5E5] rounded-lg flex items-center justify-center hover:bg-[#F5F5F5] text-black transition-all flex-shrink-0 relative"
+            title="Share"
+          >
+            {copiedId === item.id ? (
+              <Check className="w-4 h-4 text-black" />
+            ) : (
+              <Share2 className="w-4 h-4" />
+            )}
+          </button>
+
+          <a
+            href={item.googleMapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-10 h-10 border border-[#E5E5E5] rounded-lg flex items-center justify-center hover:bg-[#F5F5F5] text-black transition-all flex-shrink-0"
+            title="Google Maps"
+          >
+            <ExternalLink className="w-4 h-4" />
+          </a>
+        </div>
+      </div>
+    </motion.div>
+  );
+
+
 
   return (
     <div className="flex-1 bg-white text-black min-h-screen flex flex-col font-sans selection:bg-black selection:text-white">
@@ -1312,14 +1488,9 @@ export default function Home() {
                       key={movie.id}
                       className="group bg-white border border-[#E5E5E5] rounded-2xl overflow-hidden hover:shadow-lg transition-all flex flex-col h-full"
                     >
-                      {/* Image / Banner */}
-                      <div className="h-48 w-full relative overflow-hidden bg-neutral-100">
-                        <img
-                          src={movie.image}
-                          alt={movie.name}
-                          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
-                        />
-                        <span className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm text-white px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border border-white/10">
+                      {/* Category Badge Header */}
+                      <div className="p-6 pb-0">
+                        <span className="bg-[#F5F5F5] text-black border border-[#E5E5E5]/80 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider">
                           🎥 {movie.language}
                         </span>
                       </div>
@@ -1523,135 +1694,54 @@ export default function Home() {
                   Try adjusting your search keywords, clear some filters, or add a few favorites to see them here.
                 </p>
               </div>
+            ) : activeTab === "food" ? (
+              <div className="space-y-12">
+                {/* Breakfast & Kochuri Subsection */}
+                {filteredItems.filter(isBreakfastItem).length > 0 && (
+                  <div className="space-y-6">
+                    <div className="flex items-baseline justify-between border-b border-[#F5F5F5] pb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl">🥞</span>
+                        <h2 className="text-xl font-bold tracking-tight text-black">Breakfast / Kochuri</h2>
+                        <span className="text-xs text-[#666666] ml-2 font-normal hidden sm:inline">Legendary morning spots and local heritage breakfast joints</span>
+                      </div>
+                      <span className="bg-[#F5F5F5] text-black px-2.5 py-0.5 rounded-full text-xs font-semibold">
+                        {filteredItems.filter(isBreakfastItem).length}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      <AnimatePresence mode="popLayout">
+                        {filteredItems.filter(isBreakfastItem).map((item) => renderCard(item))}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                )}
+
+                {/* Remaining Restaurants Subsection */}
+                {filteredItems.filter(item => item.category === "food" && !isBreakfastItem(item)).length > 0 && (
+                  <div className="space-y-6">
+                    <div className="flex items-baseline justify-between border-b border-[#F5F5F5] pb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl">🍽️</span>
+                        <h2 className="text-xl font-bold tracking-tight text-black">Restaurants & Eateries</h2>
+                        <span className="text-xs text-[#666666] ml-2 font-normal hidden sm:inline">Iconic dining spots, sweet shops, cafes, and local favourites</span>
+                      </div>
+                      <span className="bg-[#F5F5F5] text-black px-2.5 py-0.5 rounded-full text-xs font-semibold">
+                        {filteredItems.filter(item => item.category === "food" && !isBreakfastItem(item)).length}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      <AnimatePresence mode="popLayout">
+                        {filteredItems.filter(item => item.category === "food" && !isBreakfastItem(item)).map((item) => renderCard(item))}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                )}
+              </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <AnimatePresence mode="popLayout">
-                  {filteredItems.map((item) => (
-                    <motion.div
-                      layout
-                      key={item.id}
-                      initial={{ opacity: 0, scale: 0.98 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.2 }}
-                      className="group bg-white border border-[#E5E5E5] rounded-2xl overflow-hidden hover:shadow-lg transition-all flex flex-col h-full"
-                    >
-                      {/* Card Content */}
-                      <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                        <div className="space-y-4">
-                          {/* Category Badge & Favorite Button */}
-                          <div className="flex justify-between items-center">
-                            <span className="bg-[#F5F5F5] text-black px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border border-[#E5E5E5]/50">
-                              {item.category === "places" ? "📍 Place" : item.category === "movies" ? "🎬 Movie Hall" : item.category === "food" ? "🍽 Food" : `🪔 Puja • ${item.zone}`}
-                            </span>
-                            <button
-                              onClick={() => toggleFavorite(item.id)}
-                              className="w-8 h-8 bg-[#F5F5F5] rounded-full flex items-center justify-center border border-[#E5E5E5]/50 hover:bg-[#E5E5E5] transition-all text-black"
-                              aria-label="Toggle Favorite"
-                            >
-                              <Heart className={`w-4 h-4 ${favorites.includes(item.id) ? "fill-black text-black" : "text-[#666666]"}`} />
-                            </button>
-                          </div>
-
-                          <div className="space-y-1">
-                            <h3 className="text-xl font-bold tracking-tight text-black group-hover:underline decoration-1 underline-offset-2">
-                              {item.name}
-                            </h3>
-                            <p className="text-xs text-[#666666] line-clamp-3 leading-relaxed">
-                              {item.description}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Metadata Rows */}
-                        <div className="space-y-2 pt-2 border-t border-[#F5F5F5] text-xs">
-                          {/* Metro */}
-                          <div className="flex items-start gap-2.5">
-                            <Train className="w-3.5 h-3.5 text-black mt-0.5 flex-shrink-0" />
-                            <div>
-                              <span className="font-semibold text-black">Metro: </span>
-                              <span className="text-[#666666]">{item.nearestMetro}</span>
-                              {item.distanceFromMetro && (
-                                <span className="text-[10px] bg-[#F5F5F5] text-black px-1.5 py-0.5 rounded-full ml-1.5 font-medium whitespace-nowrap">
-                                  {item.distanceFromMetro}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Bus */}
-                          {item.nearestBusStop && (
-                            <div className="flex items-start gap-2.5">
-                              <Bus className="w-3.5 h-3.5 text-black mt-0.5 flex-shrink-0" />
-                              <div>
-                                <span className="font-semibold text-black">Bus: </span>
-                                <span className="text-[#666666]">{item.nearestBusStop}</span>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Fee */}
-                          <div className="flex items-start gap-2.5">
-                            <DollarSign className="w-3.5 h-3.5 text-black mt-0.5 flex-shrink-0" />
-                            <div>
-                              <span className="font-semibold text-black">Entry/Price: </span>
-                              <span className="text-[#666666]">{item.entryFee}</span>
-                            </div>
-                          </div>
-
-                          {/* Timings & Closed */}
-                          <div className="flex items-start gap-2.5">
-                            <Clock className="w-3.5 h-3.5 text-black mt-0.5 flex-shrink-0" />
-                            <div>
-                              <span className="font-semibold text-black">Hours: </span>
-                              <span className="text-[#666666]">
-                                {item.openingTime}
-                                {item.closingTime && ` - ${item.closingTime}`}
-                              </span>
-                              {item.closedDay !== "None" && (
-                                <span className="text-[10px] bg-black text-white px-1.5 py-0.5 rounded ml-1.5 font-bold uppercase">
-                                  {item.closedDay} Closed
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex gap-2 pt-2">
-                          <Link 
-                            href={`/place/${item.id}`} 
-                            className="flex-1 bg-black text-white text-xs font-semibold py-2.5 px-4 rounded-lg flex items-center justify-center gap-1.5 hover:bg-black/90 active:scale-98 transition-all"
-                          >
-                            <span>Route Details</span>
-                            <ArrowRight className="w-3 h-3" />
-                          </Link>
-                          
-                          <button
-                            onClick={(e) => handleShare(item.id, e)}
-                            className="w-10 h-10 border border-[#E5E5E5] rounded-lg flex items-center justify-center hover:bg-[#F5F5F5] text-black transition-all flex-shrink-0 relative"
-                            title="Share"
-                          >
-                            {copiedId === item.id ? (
-                              <Check className="w-4 h-4 text-black" />
-                            ) : (
-                              <Share2 className="w-4 h-4" />
-                            )}
-                          </button>
-
-                          <a
-                            href={item.googleMapsUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-10 h-10 border border-[#E5E5E5] rounded-lg flex items-center justify-center hover:bg-[#F5F5F5] text-black transition-all flex-shrink-0"
-                            title="Google Maps"
-                          >
-                            <ExternalLink className="w-4 h-4" />
-                          </a>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
+                  {filteredItems.map((item) => renderCard(item))}
                 </AnimatePresence>
               </div>
             )}

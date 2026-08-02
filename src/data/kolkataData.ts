@@ -1201,7 +1201,7 @@ export const foodItems: FoodItem[] = [
     nearestMetro: "Kavi Subhash (Garia)",
     googleMapsUrl: "https://maps.app.goo.gl/mM1jgH4rpfHimyua8",
     price: "₹150 for two",
-    image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80",
+    image: "",
     detailedRoute: [
       "De-board at Kavi Subhash (Garia) Metro Station.",
       "Take a shared auto-rickshaw going towards Kalibazar.",
@@ -1210,6 +1210,169 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Special Attraction: 10 pieces of delicious Momos for only ₹70!",
       "Perfect for quick, cheap, and tasty evening snacks."
+    ]
+  },
+  {
+    id: "potlar-kochuri",
+    name: "Potlar Kochuri (Bagbazar)",
+    category: "food",
+    description: "Legendary street joint in Bagbazar (North Kolkata), famous for serving Sattu (Chatur Kochuri) and Dal Kochuri wrapped in sal leaves with flavorful spicy potato curry.",
+    nearestMetro: "Shyambazar / Sovabazar Sutanuti",
+    googleMapsUrl: "https://maps.google.com/?q=Potlar+Kochuri+Bagbazar+Kolkata",
+    price: "₹10 per plate (2 pieces)",
+    image: "",
+    detailedRoute: [
+      "De-board at Shyambazar Metro Station.",
+      "Walk 7 minutes towards Bagbazar Street.",
+      "The shop is located at the Bagbazar crossing."
+    ],
+    importantTips: [
+      "Extremely popular in the morning; sells out very fast.",
+      "Try their classic Sattu (Chatu) Kochuri."
+    ]
+  },
+  {
+    id: "mitra-cafe-sovabazar",
+    name: "Mitra Cafe (Sovabazar) - Fish Kochuri",
+    category: "food",
+    description: "Historic cabin-style restaurant in North Kolkata, famous for Macher Kochuri (Fish Kochuri), Bhetki Macher Kochuri, and standard Fish Fry.",
+    nearestMetro: "Sovabazar Sutanuti",
+    googleMapsUrl: "https://maps.google.com/?q=Mitra+Cafe+Sovabazar+Kolkata",
+    price: "₹45 - ₹65 per piece",
+    image: "",
+    detailedRoute: [
+      "De-board at Sovabazar Sutanuti Metro Station.",
+      "Exit towards Sovabazar crossing. The eatery is situated right opposite the metro gate."
+    ],
+    importantTips: [
+      "Order their signature Macher Kochuri (stuffed with spiced fish filling).",
+      "Also try the Bhetki Macher Kochuri and standard Fish Fry."
+    ]
+  },
+  {
+    id: "tewari-brothers-barabazar",
+    name: "Tewari Brothers (Bara Bazar) - Daler Kochuri",
+    category: "food",
+    description: "Iconic pure-vegetarian outlet, famous for serving authentic, thick, crispy Dal er Kochuri fried in pure ghee.",
+    nearestMetro: "Mahatma Gandhi Road (MG Road)",
+    googleMapsUrl: "https://maps.google.com/?q=Tewari+Brothers+Bara+Bazar+Kolkata",
+    price: "₹20 per piece",
+    image: "",
+    detailedRoute: [
+      "De-board at MG Road Metro Station.",
+      "Walk 5 minutes down towards Bara Bazar crossing."
+    ],
+    importantTips: [
+      "Known for pure ghee preparation.",
+      "A must-visit for authentic North Indian style Daler Kochuri."
+    ]
+  },
+  {
+    id: "jagannath-sweets-sealdah",
+    name: "Jagannath Ghosh Sweets (Sealdah)",
+    category: "food",
+    description: "Highly popular breakfast joint near Sealdah station, serving fresh, hot Hinger Kochuri and sweet Cholar Dal.",
+    nearestMetro: "Sealdah",
+    googleMapsUrl: "https://maps.google.com/?q=Jagannath+Ghosh+Sweets+Sealdah+Kolkata",
+    price: "₹12 per plate (2 pieces)",
+    image: "",
+    detailedRoute: [
+      "Exit at Sealdah Metro Station.",
+      "Walk 3 minutes towards Sealdah railway station corridor."
+    ],
+    importantTips: [
+      "The sweet Cholar Dal served with the Kochuri is highly addictive.",
+      "Very fast service, perfect for daily commuters."
+    ]
+  },
+  {
+    id: "tibetan-delight-elgin",
+    name: "Tibetan Delight (Elgin Road) - Momos",
+    category: "food",
+    description: "A viral hidden gem in Elgin Road, legendary for serving authentic, juicy Tibetan Momos (Chicken & Pork) in a cozy residential lane.",
+    nearestMetro: "Netaji Bhavan",
+    googleMapsUrl: "https://maps.google.com/?q=Tibetan+Delight+Elgin+Road+Kolkata",
+    price: "₹80 - ₹120 per plate",
+    image: "",
+    detailedRoute: [
+      "Get down at Netaji Bhavan Metro Station.",
+      "Walk towards Elgin Road (Lala Lajpat Rai Sarani) and enter the lane behind Forum Mall."
+    ],
+    importantTips: [
+      "Their Pork Steam Momos and Fried Momos are highly viral.",
+      "Expect a small queue in the evenings."
+    ]
+  },
+  {
+    id: "momo-i-am-lake-gardens",
+    name: "Momo I Am (Lake Gardens)",
+    category: "food",
+    description: "Modern viral Himalayan dining spot, famous for its juicy Pork Momo, Chicken T-momo, and spicy schezwan dipping sauce.",
+    nearestMetro: "Rabindra Sarobar",
+    googleMapsUrl: "https://maps.google.com/?q=Momo+I+Am+Lake+Gardens+Kolkata",
+    price: "₹150 - ₹250 per plate",
+    image: "",
+    detailedRoute: [
+      "De-board at Rabindra Sarobar Metro Station.",
+      "Take a short auto-rickshaw to Lake Gardens area near the railway station."
+    ],
+    importantTips: [
+      "Try their special Lhasa steamed momos.",
+      "A great premium option with beautiful modern seating."
+    ]
+  },
+  {
+    id: "chitto-babur-dokan",
+    name: "Chitto Babur Dokan (Dacres Lane) - Fish Fry",
+    category: "food",
+    description: "Legendary food stall in Dacres Lane (James Hickey Sarani), serving crispy Bhetki Fish Fry and hot Chicken Stew.",
+    nearestMetro: "Esplanade",
+    googleMapsUrl: "https://maps.google.com/?q=Chitto+Babur+Dokan+Dacres+Lane+Kolkata",
+    price: "₹80 per piece",
+    image: "",
+    detailedRoute: [
+      "Exit at Esplanade Metro Station.",
+      "Walk towards Dacres Lane (James Hickey Sarani). The shop is located in the middle of the narrow food street."
+    ],
+    importantTips: [
+      "Their Bhetki Fish Fry is freshly fried in front of you.",
+      "One of the oldest office-para street food hubs."
+    ]
+  },
+  {
+    id: "kalika-fry-college-street",
+    name: "Kalika Mukhoruchok (College Street) - Fish Fry",
+    category: "food",
+    description: "A heritage evening snacks counter on College Street, serving iconic crispy Bhetki Fish Fry, Fish Finger, and Mutton Chop.",
+    nearestMetro: "Central / MG Road",
+    googleMapsUrl: "https://maps.google.com/?q=Kalika+College+Street+Kolkata",
+    price: "₹70 per piece",
+    image: "",
+    detailedRoute: [
+      "De-board at Central or MG Road Metro Station.",
+      "Walk towards College Street; the shop is located near the Surya Sen Street crossing."
+    ],
+    importantTips: [
+      "Opens only in the evening (after 4:30 PM).",
+      "Expect a huge crowd waiting for fresh fries."
+    ]
+  },
+  {
+    id: "allen-kitchen-sovabazar",
+    name: "Allen Kitchen (Sovabazar) - Special Ghee Fish Cutlet",
+    category: "food",
+    description: "A 140-year-old heritage eatery near Sovabazar, famous for their unique Bhetki Fish Cutlet fried in pure ghee (Special Ghee Fry).",
+    nearestMetro: "Sovabazar Sutanuti",
+    googleMapsUrl: "https://maps.google.com/?q=Allen+Kitchen+Sovabazar+Kolkata",
+    price: "₹140 per piece",
+    image: "",
+    detailedRoute: [
+      "De-board at Sovabazar Sutanuti Metro Station.",
+      "Walk 3 minutes towards Sovabazar crossing. The eatery is situated on the main street."
+    ],
+    importantTips: [
+      "Famous for being fried in pure clarified butter (ghee) which gives it a unique rich flavor.",
+      "Historical favorite of royal families."
     ]
   }
 ];
