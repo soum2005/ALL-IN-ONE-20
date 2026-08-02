@@ -70,6 +70,23 @@ export default function Home() {
   const [selectedZone, setSelectedZone] = useState<string>("all");
   const [selectedFoodSub, setSelectedFoodSub] = useState<string>("all");
   const [selectedMetroStation, setSelectedMetroStation] = useState<string>("all");
+
+  const metroStations = React.useMemo(() => {
+    const stations = new Set<string>();
+    durgaPujas.forEach(p => {
+      p.nearestMetro.split("/").forEach(part => {
+        let clean = part.trim()
+          .replace(/sutanuti/gi, "")
+          .replace(/metro/gi, "")
+          .replace(/station/gi, "")
+          .trim();
+        if (clean && clean !== "None" && clean !== "Kalyani Luminous" && clean !== "Kalyani") {
+          stations.add(clean);
+        }
+      });
+    });
+    return ["All Stations", ...Array.from(stations).sort(), "Kalyani"];
+  }, []);
   
   // --- Secure Client-Side Auth State ---
   const [currentUser, setCurrentUser] = useState<{ email: string; username: string; isAdmin?: boolean } | null>(null);
@@ -515,7 +532,15 @@ export default function Home() {
     if (activeTab === "all" && item.type === "upcoming" && searchQuery.trim() === "") return false;
 
     // 2. Zone Filter (Durga Pujas only)
-    if (activeTab === "puja" && selectedZone !== "all" && item.zone !== selectedZone) return false;
+    if (activeTab === "puja" && selectedZone !== "all") {
+      const z = selectedZone.toLowerCase();
+      const itemZone = item.zone?.toLowerCase() || "";
+      if (z === "north" && !itemZone.includes("north")) return false;
+      if (z === "south" && !itemZone.includes("south")) return false;
+      if (z === "east" && !itemZone.includes("east")) return false;
+      if (z === "west" && !itemZone.includes("west") && !itemZone.includes("behala")) return false;
+      if (z === "kalyani" && !itemZone.includes("kalyani")) return false;
+    }
 
     // Food Sub-category Filter
     if (activeTab === "food" && selectedFoodSub !== "all") {
@@ -609,7 +634,8 @@ export default function Home() {
       "potlar-kochuri",
       "mitra-cafe-sovabazar",
       "tewari-brothers-barabazar",
-      "jagannath-sweets-sealdah"
+      "jagannath-sweets-sealdah",
+      "mouchak-jadavpur"
     ].includes(item.id);
   };
 
@@ -926,7 +952,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-nowrap overflow-x-auto gap-3 pb-2 scrollbar-none">
               <button
-                onClick={() => { setActiveTab("all"); }}
+                onClick={() => { setActiveTab("all"); setSelectedFoodSub("all"); setSelectedMetroStation("all"); setSelectedZone("all"); }}
                 className={`flex items-center gap-2 px-5 py-3 rounded-xl border text-sm font-semibold transition-all whitespace-nowrap ${
                   activeTab === "all" ? "bg-black text-white border-black" : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
                 }`}
@@ -935,7 +961,7 @@ export default function Home() {
                 Home
               </button>
               <button
-                onClick={() => { setActiveTab("food"); }}
+                onClick={() => { setActiveTab("food"); setSelectedFoodSub("all"); setSelectedMetroStation("all"); setSelectedZone("all"); }}
                 className={`flex items-center gap-2 px-5 py-3 rounded-xl border text-sm font-semibold transition-all whitespace-nowrap ${
                   activeTab === "food" ? "bg-black text-white border-black" : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
                 }`}
@@ -944,7 +970,7 @@ export default function Home() {
                 Food
               </button>
               <button
-                onClick={() => { setActiveTab("puja"); }}
+                onClick={() => { setActiveTab("puja"); setSelectedFoodSub("all"); setSelectedMetroStation("all"); setSelectedZone("all"); }}
                 className={`flex items-center gap-2 px-5 py-3 rounded-xl border text-sm font-semibold transition-all whitespace-nowrap ${
                   activeTab === "puja" ? "bg-black text-white border-black" : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
                 }`}
@@ -953,7 +979,7 @@ export default function Home() {
                 Durga Puja
               </button>
               <button
-                onClick={() => { setActiveTab("places"); }}
+                onClick={() => { setActiveTab("places"); setSelectedFoodSub("all"); setSelectedMetroStation("all"); setSelectedZone("all"); }}
                 className={`flex items-center gap-2 px-5 py-3 rounded-xl border text-sm font-semibold transition-all whitespace-nowrap ${
                   activeTab === "places" ? "bg-black text-white border-black" : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
                 }`}
@@ -962,7 +988,7 @@ export default function Home() {
                 Tourist Spots
               </button>
               <button
-                onClick={() => { setActiveTab("movies"); }}
+                onClick={() => { setActiveTab("movies"); setSelectedFoodSub("all"); setSelectedMetroStation("all"); setSelectedZone("all"); }}
                 className={`flex items-center gap-2 px-5 py-3 rounded-xl border text-sm font-semibold transition-all whitespace-nowrap ${
                   activeTab === "movies" ? "bg-black text-white border-black" : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
                 }`}
@@ -971,7 +997,7 @@ export default function Home() {
                 Movie Halls
               </button>
               <button
-                onClick={() => { setActiveTab("near-me"); }}
+                onClick={() => { setActiveTab("near-me"); setSelectedFoodSub("all"); setSelectedMetroStation("all"); setSelectedZone("all"); }}
                 className={`flex items-center gap-2 px-5 py-3 rounded-xl border text-sm font-semibold transition-all whitespace-nowrap ${
                   activeTab === "near-me" ? "bg-black text-white border-black" : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
                 }`}
@@ -1820,32 +1846,22 @@ export default function Home() {
                     Filter by Metro Station Route
                   </span>
                   <div className="flex flex-nowrap overflow-x-auto gap-2 pb-2 border-b border-[#F5F5F5] scrollbar-none">
-                    {[
-                      { id: "all", label: "All Stations" },
-                      { id: "shyambazar", label: "Shyambazar" },
-                      { id: "sovabazar", label: "Sovabazar" },
-                      { id: "girish park", label: "Girish Park" },
-                      { id: "belgachia", label: "Belgachia" },
-                      { id: "mg road", label: "MG Road" },
-                      { id: "central", label: "Central" },
-                      { id: "kalighat", label: "Kalighat" },
-                      { id: "jatin das park", label: "Jatin Das Park" },
-                      { id: "rabindra sarobar", label: "Rabindra Sarobar" },
-                      { id: "dum dum", label: "Dum Dum" },
-                      { id: "kalyani", label: "Kalyani (Train)" }
-                    ].map(station => (
-                      <button
-                        key={station.id}
-                        onClick={() => setSelectedMetroStation(station.id)}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all whitespace-nowrap ${
-                          selectedMetroStation === station.id 
-                            ? "bg-black text-white border-black" 
-                            : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
-                        }`}
-                      >
-                        🚇 {station.label}
-                      </button>
-                    ))}
+                    {metroStations.map(station => {
+                      const id = station === "All Stations" ? "all" : station.toLowerCase();
+                      return (
+                        <button
+                          key={station}
+                          onClick={() => setSelectedMetroStation(id)}
+                          className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all whitespace-nowrap ${
+                            selectedMetroStation === id 
+                              ? "bg-black text-white border-black" 
+                              : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
+                          }`}
+                        >
+                          🚇 {station === "Kalyani" ? "Kalyani (Train)" : station}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
