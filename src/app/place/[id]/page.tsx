@@ -50,6 +50,7 @@ interface UnifiedItem {
   nearbyAttractions?: string[];
   image: string;
   zone?: string;
+  menuItems?: { item: string; price: string }[];
   extraDetails?: {
     showTimings?: { lang: string; times: string[] }[];
     priceDetails?: string;
@@ -370,11 +371,29 @@ export default function PlaceDetail({ params }: { params: Promise<{ id: string }
               </div>
             </div>
           ) : (
-            <div className="md:col-span-2 space-y-6">
-              <h3 className="font-bold text-sm uppercase tracking-wider text-black flex items-center gap-1.5 border-b border-[#F5F5F5] pb-3">
-                <Zap className="w-4 h-4" />
-                Transit & Fares
-              </h3>
+            <div className="md:col-span-2 space-y-8">
+              {/* Menu & Prices Section */}
+              {item.category === "food" && item.menuItems && (
+                <div className="space-y-4 bg-white border border-[#E5E5E5] p-6 rounded-2xl shadow-sm/5">
+                  <h3 className="font-bold text-sm uppercase tracking-wider text-black flex items-center gap-1.5 border-b border-[#E5E5E5]/50 pb-3">
+                    🍴 Menu & Prices
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+                    {item.menuItems.map((menu, idx) => (
+                      <div key={idx} className="flex justify-between items-center text-xs border-b border-[#F5F5F5] pb-2">
+                        <span className="font-medium text-black">{menu.item}</span>
+                        <span className="font-bold text-black bg-[#F5F5F5] px-2 py-0.5 rounded border border-[#E5E5E5]/40">{menu.price}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-6">
+                <h3 className="font-bold text-sm uppercase tracking-wider text-black flex items-center gap-1.5 border-b border-[#F5F5F5] pb-3">
+                  <Zap className="w-4 h-4" />
+                  Transit & Fares
+                </h3>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 
@@ -462,6 +481,7 @@ export default function PlaceDetail({ params }: { params: Promise<{ id: string }
                 </div>
               </div>
             </div>
+          </div>
           )}
         </section>
 

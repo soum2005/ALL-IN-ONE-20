@@ -28,7 +28,8 @@ import {
   Circle,
   Bell,
   BellOff,
-  User
+  User,
+  Home as HomeIcon
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { places, movieHalls, foodItems, Place, FoodItem } from "@/data/kolkataData";
@@ -58,6 +59,7 @@ interface UnifiedItem {
   nearbyAttractions?: string[];
   image: string;
   zone?: string;
+  menuItems?: { item: string; price: string }[];
 }
 
 export default function Home() {
@@ -66,6 +68,8 @@ export default function Home() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [selectedZone, setSelectedZone] = useState<string>("all");
+  const [selectedFoodSub, setSelectedFoodSub] = useState<string>("all");
+  const [selectedMetroStation, setSelectedMetroStation] = useState<string>("all");
   
   // --- Secure Client-Side Auth State ---
   const [currentUser, setCurrentUser] = useState<{ email: string; username: string; isAdmin?: boolean } | null>(null);
@@ -513,6 +517,30 @@ export default function Home() {
     // 2. Zone Filter (Durga Pujas only)
     if (activeTab === "puja" && selectedZone !== "all" && item.zone !== selectedZone) return false;
 
+    // Food Sub-category Filter
+    if (activeTab === "food" && selectedFoodSub !== "all") {
+      if (selectedFoodSub === "kochuri" && !isKochuriItem(item)) return false;
+      if (selectedFoodSub === "momo" && !isMomoItem(item)) return false;
+      if (selectedFoodSub === "fishfry" && !isFishFryItem(item)) return false;
+      if (selectedFoodSub === "restaurant" && !isRestaurantItem(item)) return false;
+      if (selectedFoodSub === "biryani" && !isBiryaniItem(item)) return false;
+    }
+
+    // Durga Puja Metro Station Filter
+    if (activeTab === "puja" && selectedMetroStation !== "all") {
+      const station = selectedMetroStation.toLowerCase();
+      const metroField = item.nearestMetro.toLowerCase();
+      let matched = false;
+      if (station === "mg road") {
+        matched = metroField.includes("mahatma gandhi") || metroField.includes("mg road");
+      } else if (station === "dum dum") {
+        matched = metroField.includes("dum dum") || metroField.includes("noapara");
+      } else {
+        matched = metroField.includes(station);
+      }
+      if (!matched) return false;
+    }
+
     // 2. Search Query Filter
     if (searchQuery.trim() !== "") {
       const q = searchQuery.toLowerCase();
@@ -572,13 +600,50 @@ export default function Home() {
     setFilters(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const isBreakfastItem = (item: UnifiedItem) => {
+  const isKochuriItem = (item: UnifiedItem) => {
     return item.category === "food" && [
       "chinese-paratha",
       "putiram-sweets",
       "adi-haridas-modak",
-      "nandalal-ghosh-sons"
+      "nandalal-ghosh-sons",
+      "potlar-kochuri",
+      "mitra-cafe-sovabazar",
+      "tewari-brothers-barabazar",
+      "jagannath-sweets-sealdah"
     ].includes(item.id);
+  };
+
+  const isMomoItem = (item: UnifiedItem) => {
+    return item.category === "food" && [
+      "hungry-hub",
+      "tibetan-delight-elgin",
+      "momo-i-am-lake-gardens"
+    ].includes(item.id);
+  };
+
+  const isFishFryItem = (item: UnifiedItem) => {
+    return item.category === "food" && [
+      "chitto-babur-dokan",
+      "kalika-fry-college-street",
+      "allen-kitchen-sovabazar"
+    ].includes(item.id);
+  };
+
+  const isBiryaniItem = (item: UnifiedItem) => {
+    return item.category === "food" && [
+      "ujjwal-biryani",
+      "dada-boudi",
+      "d-bapi",
+      "bedwin-jadavpur"
+    ].includes(item.id);
+  };
+
+  const isRestaurantItem = (item: UnifiedItem) => {
+    return item.category === "food" && 
+      !isKochuriItem(item) && 
+      !isMomoItem(item) && 
+      !isFishFryItem(item) &&
+      !isBiryaniItem(item);
   };
 
   const renderCard = (item: UnifiedItem) => (
@@ -866,26 +931,8 @@ export default function Home() {
                   activeTab === "all" ? "bg-black text-white border-black" : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
                 }`}
               >
-                <Compass className="w-4 h-4" />
-                All Guides
-              </button>
-              <button
-                onClick={() => { setActiveTab("places"); }}
-                className={`flex items-center gap-2 px-5 py-3 rounded-xl border text-sm font-semibold transition-all whitespace-nowrap ${
-                  activeTab === "places" ? "bg-black text-white border-black" : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
-                }`}
-              >
-                <MapPin className="w-4 h-4" />
-                📍 Places
-              </button>
-              <button
-                onClick={() => { setActiveTab("movies"); }}
-                className={`flex items-center gap-2 px-5 py-3 rounded-xl border text-sm font-semibold transition-all whitespace-nowrap ${
-                  activeTab === "movies" ? "bg-black text-white border-black" : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
-                }`}
-              >
-                <Film className="w-4 h-4" />
-                🎬 Movie Halls
+                <HomeIcon className="w-4 h-4" />
+                Home
               </button>
               <button
                 onClick={() => { setActiveTab("food"); }}
@@ -894,7 +941,7 @@ export default function Home() {
                 }`}
               >
                 <Utensils className="w-4 h-4" />
-                🍽 Famous Food
+                Food
               </button>
               <button
                 onClick={() => { setActiveTab("puja"); }}
@@ -903,7 +950,25 @@ export default function Home() {
                 }`}
               >
                 <Sparkles className="w-4 h-4" />
-                🪔 Durga Puja
+                Durga Puja
+              </button>
+              <button
+                onClick={() => { setActiveTab("places"); }}
+                className={`flex items-center gap-2 px-5 py-3 rounded-xl border text-sm font-semibold transition-all whitespace-nowrap ${
+                  activeTab === "places" ? "bg-black text-white border-black" : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
+                }`}
+              >
+                <MapPin className="w-4 h-4" />
+                Tourist Spots
+              </button>
+              <button
+                onClick={() => { setActiveTab("movies"); }}
+                className={`flex items-center gap-2 px-5 py-3 rounded-xl border text-sm font-semibold transition-all whitespace-nowrap ${
+                  activeTab === "movies" ? "bg-black text-white border-black" : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
+                }`}
+              >
+                <Film className="w-4 h-4" />
+                Movie Halls
               </button>
               <button
                 onClick={() => { setActiveTab("near-me"); }}
@@ -911,8 +976,8 @@ export default function Home() {
                   activeTab === "near-me" ? "bg-black text-white border-black" : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
                 }`}
               >
-                <MapPin className="w-4 h-4" />
-                📍 Near Me
+                <Compass className="w-4 h-4" />
+                Near Me
               </button>
             </div>
           </div>
@@ -1679,14 +1744,33 @@ export default function Home() {
             )}
 
             {/* Results Title Count */}
-            <div className="flex justify-between items-center">
-              <h2 className="text-sm font-semibold tracking-wider text-[#666666] uppercase">
-                {activeTab === "favorites" ? "Your Favorites" : "Discover Sites"} ({filteredItems.length})
-              </h2>
-            </div>
+            {!(activeTab === "all" && searchQuery.trim() === "") && (
+              <div className="flex justify-between items-center">
+                <h2 className="text-sm font-semibold tracking-wider text-[#666666] uppercase">
+                  {activeTab === "favorites" ? "Your Favorites" : "Discover Sites"} ({filteredItems.length})
+                </h2>
+              </div>
+            )}
 
             {/* Grid List */}
-            {filteredItems.length === 0 ? (
+            {activeTab === "all" && searchQuery.trim() === "" ? (
+              <div className="py-20 px-6 text-center bg-white border border-[#E5E5E5] rounded-3xl space-y-6 max-w-3xl mx-auto shadow-sm/5">
+                <div className="w-16 h-16 bg-[#F5F5F5] rounded-2xl flex items-center justify-center mx-auto border border-[#E5E5E5]/50">
+                  <span className="text-3xl">🕌</span>
+                </div>
+                <div className="space-y-3">
+                  <h3 className="text-2xl font-black text-black tracking-tight leading-tight">
+                    Kolkata Guide & Directory
+                  </h3>
+                  <p className="text-sm md:text-base text-black/80 font-medium leading-relaxed max-w-xl mx-auto">
+                    Here you can easily find all kinds of food shops, Durga Puja pandals, movie halls, tourist spots, their correct locations, and current prices.
+                  </p>
+                </div>
+                <p className="text-xs text-[#666666] font-normal">
+                  Type in the search bar above or choose a category from the tabs to start exploring.
+                </p>
+              </div>
+            ) : filteredItems.length === 0 ? (
               <div className="py-20 text-center border border-dashed border-[#E5E5E5] rounded-2xl">
                 <Info className="w-8 h-8 text-[#666666] mx-auto mb-3" />
                 <h3 className="text-lg font-semibold">No results found</h3>
@@ -1695,48 +1779,104 @@ export default function Home() {
                 </p>
               </div>
             ) : activeTab === "food" ? (
-              <div className="space-y-12">
-                {/* Breakfast & Kochuri Subsection */}
-                {filteredItems.filter(isBreakfastItem).length > 0 && (
-                  <div className="space-y-6">
-                    <div className="flex items-baseline justify-between border-b border-[#F5F5F5] pb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl">🥞</span>
-                        <h2 className="text-xl font-bold tracking-tight text-black">Breakfast / Kochuri</h2>
-                        <span className="text-xs text-[#666666] ml-2 font-normal hidden sm:inline">Legendary morning spots and local heritage breakfast joints</span>
-                      </div>
-                      <span className="bg-[#F5F5F5] text-black px-2.5 py-0.5 rounded-full text-xs font-semibold">
-                        {filteredItems.filter(isBreakfastItem).length}
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                      <AnimatePresence mode="popLayout">
-                        {filteredItems.filter(isBreakfastItem).map((item) => renderCard(item))}
-                      </AnimatePresence>
+              <div className="space-y-8">
+                {/* Food Sub-navigation tabs */}
+                <div className="flex flex-nowrap overflow-x-auto gap-2 pb-2 border-b border-[#F5F5F5] scrollbar-none">
+                  {[
+                    { id: "all", label: "All Food", emoji: "🍽️" },
+                    { id: "kochuri", label: "Kochuri & Breakfast", emoji: "🥞" },
+                    { id: "momo", label: "Momo & Snacks", emoji: "🥟" },
+                    { id: "fishfry", label: "Fish Fry", emoji: "🐟" },
+                    { id: "restaurant", label: "Restaurants", emoji: "🍛" },
+                    { id: "biryani", label: "Biryani", emoji: "🍗" }
+                  ].map(tab => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setSelectedFoodSub(tab.id)}
+                      className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold border transition-all whitespace-nowrap ${
+                        selectedFoodSub === tab.id 
+                          ? "bg-black text-white border-black" 
+                          : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
+                      }`}
+                    >
+                      <span>{tab.emoji}</span>
+                      <span>{tab.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Sub-page content rendering */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  <AnimatePresence mode="popLayout">
+                    {filteredItems.map((item) => renderCard(item))}
+                  </AnimatePresence>
+                </div>
+              </div>
+            ) : activeTab === "puja" ? (
+              <div className="space-y-8">
+                {/* Metro Stations Sub-navigation */}
+                <div className="space-y-2">
+                  <span className="text-xs font-semibold text-[#666666] uppercase tracking-wider block">
+                    Filter by Metro Station Route
+                  </span>
+                  <div className="flex flex-nowrap overflow-x-auto gap-2 pb-2 border-b border-[#F5F5F5] scrollbar-none">
+                    {[
+                      { id: "all", label: "All Stations" },
+                      { id: "shyambazar", label: "Shyambazar" },
+                      { id: "sovabazar", label: "Sovabazar" },
+                      { id: "girish park", label: "Girish Park" },
+                      { id: "belgachia", label: "Belgachia" },
+                      { id: "mg road", label: "MG Road" },
+                      { id: "central", label: "Central" },
+                      { id: "kalighat", label: "Kalighat" },
+                      { id: "jatin das park", label: "Jatin Das Park" },
+                      { id: "rabindra sarobar", label: "Rabindra Sarobar" },
+                      { id: "dum dum", label: "Dum Dum" },
+                      { id: "kalyani", label: "Kalyani (Train)" }
+                    ].map(station => (
+                      <button
+                        key={station.id}
+                        onClick={() => setSelectedMetroStation(station.id)}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all whitespace-nowrap ${
+                          selectedMetroStation === station.id 
+                            ? "bg-black text-white border-black" 
+                            : "bg-[#F5F5F5] text-black border-transparent hover:bg-[#E5E5E5]"
+                        }`}
+                      >
+                        🚇 {station.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Durga Puja Zone Filter Row */}
+                {selectedMetroStation === "all" && (
+                  <div className="flex flex-wrap items-center justify-between gap-4 bg-[#F5F5F5] p-4 rounded-2xl border border-[#E5E5E5]/50">
+                    <span className="text-xs font-semibold text-[#666666]">Regional Puja Zones</span>
+                    <div className="flex gap-2">
+                      {["all", "north", "south", "east", "west", "kalyani"].map(zone => (
+                        <button
+                          key={zone}
+                          onClick={() => setSelectedZone(zone)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold border capitalize transition-all ${
+                            selectedZone === zone 
+                              ? "bg-black text-white border-black" 
+                              : "bg-white text-black border-[#E5E5E5] hover:bg-[#F5F5F5]"
+                          }`}
+                        >
+                          {zone}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 )}
 
-                {/* Remaining Restaurants Subsection */}
-                {filteredItems.filter(item => item.category === "food" && !isBreakfastItem(item)).length > 0 && (
-                  <div className="space-y-6">
-                    <div className="flex items-baseline justify-between border-b border-[#F5F5F5] pb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl">🍽️</span>
-                        <h2 className="text-xl font-bold tracking-tight text-black">Restaurants & Eateries</h2>
-                        <span className="text-xs text-[#666666] ml-2 font-normal hidden sm:inline">Iconic dining spots, sweet shops, cafes, and local favourites</span>
-                      </div>
-                      <span className="bg-[#F5F5F5] text-black px-2.5 py-0.5 rounded-full text-xs font-semibold">
-                        {filteredItems.filter(item => item.category === "food" && !isBreakfastItem(item)).length}
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                      <AnimatePresence mode="popLayout">
-                        {filteredItems.filter(item => item.category === "food" && !isBreakfastItem(item)).map((item) => renderCard(item))}
-                      </AnimatePresence>
-                    </div>
-                  </div>
-                )}
+                {/* Cards List */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  <AnimatePresence mode="popLayout">
+                    {filteredItems.map((item) => renderCard(item))}
+                  </AnimatePresence>
+                </div>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

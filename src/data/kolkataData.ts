@@ -970,6 +970,7 @@ export interface FoodItem {
   detailedRoute?: string[];
   importantTips?: string[];
   image: string;
+  menuItems?: { item: string; price: string }[];
 }
 
 export const foodItems: FoodItem[] = [
@@ -980,10 +981,16 @@ export const foodItems: FoodItem[] = [
     description: "Kolkata's legendary street-style breakfast featuring hot fluffy Kochuris served with thick spicy Ghugni and Dum Aloo.",
     nearestMetro: "Metro Gate No. 4, 5",
     price: "₹7 per piece",
-    image: "https://images.unsplash.com/photo-1601050690597-df056fb4ce78?auto=format&fit=crop&w=800&q=80",
+    image: "",
     importantTips: [
       "Get there early in the morning (7 AM - 9 AM) for fresh, hot parathas.",
       "Highly budget friendly street food."
+    ],
+    menuItems: [
+      { item: "Chinese Paratha with Ghugni", price: "₹15" },
+      { item: "Kochuri with Alur Dom (2 pcs)", price: "₹14" },
+      { item: "Special Ghugni (1 plate)", price: "₹10" },
+      { item: "Extra Alur Dom", price: "₹5" }
     ]
   },
   {
@@ -993,7 +1000,7 @@ export const foodItems: FoodItem[] = [
     description: "A highly-rated authentic Bengali fine-dining restaurant serving signature mustard and poppy seed dishes.",
     nearestMetro: "Kalighat (then take auto or bus)",
     googleMapsUrl: "https://maps.app.goo.gl/hC3CjhTVVBWCPH697",
-    image: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80",
+    image: "",
     detailedRoute: [
       "Get down at Kalighat Metro Station.",
       "Board an auto-rickshaw or bus going towards Gariahat/Southern Avenue.",
@@ -1001,6 +1008,14 @@ export const foodItems: FoodItem[] = [
     ],
     importantTips: [
       "Try the signature Bhetki Paturi (mustard fish steamed in banana leaf) and Alu Posto."
+    ],
+    menuItems: [
+      { item: "Bhetki Paturi (1 pc)", price: "₹180" },
+      { item: "Kosha Mangsho (4 pcs)", price: "₹290" },
+      { item: "Alu Posto", price: "₹120" },
+      { item: "Sorse Ilish (1 pc)", price: "₹350" },
+      { item: "Basmati Rice", price: "₹60" },
+      { item: "Bengali Thali (Fish)", price: "₹340" }
     ]
   },
   {
@@ -1010,7 +1025,7 @@ export const foodItems: FoodItem[] = [
     description: "A whimsical themed Bengali restaurant named after Satyajit Ray's iconic ghost king character, serving elaborate traditional thalis.",
     nearestMetro: "Kavi Subhash / Garia (then take auto to Jadavpur)",
     googleMapsUrl: "https://maps.app.goo.gl/btBCmaobKdJVAxDz7",
-    image: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80",
+    image: "",
     detailedRoute: [
       "Get down at Garia metro station.",
       "Take a shared auto going towards Jadavpur 8B bus stand.",
@@ -1019,6 +1034,13 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Order their unlimited thali for a complete Bengali feast.",
       "Enjoy the unique interactive ghost voice effects."
+    ],
+    menuItems: [
+      { item: "Bhoj Thali (Unlimited Veg)", price: "₹299" },
+      { item: "Bhoj Thali (Mutton & Fish)", price: "₹549" },
+      { item: "Bhooter Raja Special Thali", price: "₹699" },
+      { item: "Luchi with Cholar Dal (4 pcs)", price: "₹80" },
+      { item: "Kosha Mangsho (Mutton)", price: "₹320" }
     ]
   },
   {
@@ -1027,9 +1049,15 @@ export const foodItems: FoodItem[] = [
     category: "food",
     description: "A premium heritage dining spot designed to look like a vintage zamindar mansion, celebrating royal Bengali recipes.",
     googleMapsUrl: "https://maps.app.goo.gl/P43t8joVckWMrjQh8",
-    image: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80",
+    image: "",
     importantTips: [
       "Perfect for family gatherings and experiencing royal zamindari hospitality."
+    ],
+    menuItems: [
+      { item: "Rajbari Veg Thali", price: "₹350" },
+      { item: "Zamindari Mutton Thali", price: "₹650" },
+      { item: "Daab Chingri", price: "₹380" },
+      { item: "Gandharaj Mutton Fry", price: "₹320" }
     ]
   },
   {
@@ -1039,7 +1067,7 @@ export const foodItems: FoodItem[] = [
     description: "The historic intellectual hub of Kolkata on College Street, known for its nostalgic high-ceiling layout and Mutton Cutlets.",
     nearestMetro: "Central or MG Road",
     googleMapsUrl: "https://maps.app.goo.gl/cXfH7ZfyvUFmYUbt9",
-    image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800&q=80",
+    image: "",
     detailedRoute: [
       "De-board at Central or MG Road Metro Station.",
       "Walk towards College Street (Boi Para).",
@@ -1048,6 +1076,14 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Order their famous Mutton Kabiraji Cutlet and Infusion Coffee.",
       "Best enjoyed with a group of friends for an endless chat (adda)."
+    ],
+    menuItems: [
+      { item: "Cold Coffee with Cream", price: "₹70" },
+      { item: "Hot Coffee (Infusion)", price: "₹25" },
+      { item: "Mutton Kabiraji Cutlet", price: "₹140" },
+      { item: "Chicken Cutlet", price: "₹90" },
+      { item: "Mutton Afghan Cutlet", price: "₹150" },
+      { item: "French Fries", price: "₹60" }
     ]
   },
   {
@@ -1057,7 +1093,7 @@ export const foodItems: FoodItem[] = [
     description: "A highly acclaimed local biryani joint in the Madhyamgram area, famous for its flavorful long grain rice and melt-in-mouth mutton.",
     nearestMetro: "No direct metro (take train from Sealdah)",
     googleMapsUrl: "https://maps.app.goo.gl/42c2kGpVsdVD1TMV8",
-    image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80",
+    image: "",
     detailedRoute: [
       "Go to Sealdah Railway Station.",
       "Take a local train on the Barasat/Bongaon line and get down at Madhyamgram Station.",
@@ -1065,6 +1101,12 @@ export const foodItems: FoodItem[] = [
     ],
     importantTips: [
       "The potato in this biryani is highly flavorful and a local favorite."
+    ],
+    menuItems: [
+      { item: "Mutton Biryani (Special)", price: "₹210" },
+      { item: "Chicken Biryani", price: "₹180" },
+      { item: "Extra Aloo/Egg", price: "₹20" },
+      { item: "Chicken Chaap", price: "₹90" }
     ]
   },
   {
@@ -1074,7 +1116,7 @@ export const foodItems: FoodItem[] = [
     description: "Arguably the most famous Biryani in the outskirts of Kolkata, famous for massive mutton portions and rich, ghee-infused aroma.",
     nearestMetro: "No direct metro (take train from Sealdah)",
     googleMapsUrl: "https://maps.app.goo.gl/X4cWTz5EoTyBZE437",
-    image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80",
+    image: "",
     detailedRoute: [
       "Go to Sealdah Station.",
       "Board a local train bound for Barrackpore.",
@@ -1083,6 +1125,13 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Expect long wait times on weekends and holidays.",
       "Their mutton piece is massive (usually around 200g) and extremely soft."
+    ],
+    menuItems: [
+      { item: "Special Mutton Biryani (200g meat)", price: "₹340" },
+      { item: "Special Chicken Biryani", price: "₹290" },
+      { item: "Mutton Chaap", price: "₹160" },
+      { item: "Chicken Chaap", price: "₹140" },
+      { item: "Firni", price: "₹50" }
     ]
   },
   {
@@ -1092,13 +1141,20 @@ export const foodItems: FoodItem[] = [
     description: "A major rival to Dada Boudi in Barrackpore, popular for serving a slightly lighter but equally flavorful and aromatic biryani.",
     nearestMetro: "No direct metro (take train from Sealdah)",
     googleMapsUrl: "https://maps.app.goo.gl/wkvBeDkTn1tRrfKc6",
-    image: "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=800&q=80",
+    image: "",
     detailedRoute: [
       "Take a local train from Sealdah to Barrackpore.",
       "Take a cycle rickshaw or walk from the station area towards the D Bapi outlet."
     ],
     importantTips: [
       "A great alternative if the queues at Dada Boudi are too long."
+    ],
+    menuItems: [
+      { item: "Mutton Biryani", price: "₹260" },
+      { item: "Chicken Biryani", price: "₹220" },
+      { item: "Chicken Chaap", price: "₹120" },
+      { item: "Mutton Chaap", price: "₹150" },
+      { item: "Firni", price: "₹40" }
     ]
   },
   {
@@ -1108,7 +1164,7 @@ export const foodItems: FoodItem[] = [
     description: "A historic sweet shop near College Square, famous for its signature Radhaballavi (lentil-stuffed flatbread) served with sweet and spicy cholar dal.",
     nearestMetro: "Mahatma Gandhi Road (MG Road) / Central",
     googleMapsUrl: "https://maps.google.com/?q=Putiram+Sweets+College+Street+Kolkata",
-    image: "https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&w=800&q=80",
+    image: "",
     detailedRoute: [
       "De-board at MG Road Metro Station.",
       "Walk 5-7 minutes towards College Square / Surya Sen Street.",
@@ -1117,6 +1173,13 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Their Radhaballavi is a local legend and sells out quickly in the morning.",
       "Pair your breakfast with their baked rasgulla or sweet curd (Misti Doi)."
+    ],
+    menuItems: [
+      { item: "Radhaballavi with Dal (2 pcs)", price: "₹30" },
+      { item: "Hinger Kochuri with Alur Dom (2 pcs)", price: "₹24" },
+      { item: "Baked Rasgulla (1 pc)", price: "₹20" },
+      { item: "Sweet Curd (Misti Doi, 100g)", price: "₹35" },
+      { item: "Rabri (1 plate)", price: "₹50" }
     ]
   },
   {
@@ -1126,7 +1189,7 @@ export const foodItems: FoodItem[] = [
     description: "A legendary 200-year-old heritage shop in North Kolkata, famous for its traditional hing (asafoetida) kochuri served with alur dom on sal leaves.",
     nearestMetro: "Shyambazar",
     googleMapsUrl: "https://maps.google.com/?q=Adi+Haridas+Modak+Shyambazar+Kolkata",
-    image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80",
+    image: "",
     detailedRoute: [
       "De-board at Shyambazar Metro Station.",
       "Take Exit 1 towards Shyambazar 5-point crossing.",
@@ -1135,6 +1198,12 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Best visited between 7:30 AM and 10:00 AM for fresh morning kachoris.",
       "Do try their signature Rabri and traditional sweets."
+    ],
+    menuItems: [
+      { item: "Hing Kochuri with Alur Dom (2 pcs)", price: "₹20" },
+      { item: "Luchi with Cholar Dal (4 pcs)", price: "₹30" },
+      { item: "Traditional Rabri", price: "₹40" },
+      { item: "Langcha / Gulab Jamun (1 pc)", price: "₹10" }
     ]
   },
   {
@@ -1144,7 +1213,7 @@ export const foodItems: FoodItem[] = [
     description: "A traditional gem in the heart of North Kolkata, highly popular among locals for serving piping hot, thin kochuris with a special flavorful potato curry.",
     nearestMetro: "Girish Park",
     googleMapsUrl: "https://maps.google.com/?q=Nandalal+Ghosh+and+Sons+Sukia+Street+Kolkata",
-    image: "https://images.unsplash.com/photo-1601050690597-df056fb4ce78?auto=format&fit=crop&w=800&q=80",
+    image: "",
     detailedRoute: [
       "De-board at Girish Park Metro Station.",
       "Walk or take a short rickshaw ride towards Sukia Street (near Manicktola crossing)."
@@ -1152,6 +1221,12 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Go early (around 7:30 AM) to beat the morning crowd.",
       "They also serve excellent classic Bengali sweets."
+    ],
+    menuItems: [
+      { item: "Kachori with Potato Curry (2 pcs)", price: "₹16" },
+      { item: "Singara (Samosa, 1 pc)", price: "₹8" },
+      { item: "Rasgulla (1 pc)", price: "₹10" },
+      { item: "Sandesh (Kanchagolla, 1 pc)", price: "₹12" }
     ]
   },
   {
@@ -1162,7 +1237,7 @@ export const foodItems: FoodItem[] = [
     nearestMetro: "Shyambazar",
     googleMapsUrl: "https://maps.app.goo.gl/YeLJmbZ8d7H8qkZE6",
     price: "₹300 - ₹500 for two",
-    image: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=800&q=80",
+    image: "",
     detailedRoute: [
       "De-board at Shyambazar Metro Station.",
       "Take Exit 1 or Exit 2 towards the Shyambazar 5-Point Crossing.",
@@ -1171,6 +1246,12 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Their Kosha Mangsho is famously spicy and rich; pair it with Roomali Roti or soft parathas.",
       "Seating space is extremely limited (historically tiny), so most people opt for takeaway."
+    ],
+    menuItems: [
+      { item: "Kosha Mangsho (Mutton, 2 pcs)", price: "₹280" },
+      { item: "Roomali Roti (1 pc)", price: "₹15" },
+      { item: "Chicken Kosha", price: "₹220" },
+      { item: "Paratha (1 pc)", price: "₹25" }
     ]
   },
   {
@@ -1181,7 +1262,7 @@ export const foodItems: FoodItem[] = [
     nearestMetro: "Mahanayak Uttam Kumar (Tollygunge) - then take auto to Jadavpur 8B",
     googleMapsUrl: "https://maps.app.goo.gl/53TZCszsjvcamv6n8",
     price: "₹300 - ₹500 for two",
-    image: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80",
+    image: "",
     detailedRoute: [
       "Get down at Mahanayak Uttam Kumar (Tollygunge) Metro Station.",
       "Take a shared auto going towards Jadavpur 8B.",
@@ -1191,6 +1272,13 @@ export const foodItems: FoodItem[] = [
       "Nearest Bus Stop: Jadavpur 8B Bus Stand.",
       "Bus Numbers available: 8B, 1A, 24A, 45, 47A, 47B, AC-1, E-1.",
       "Very popular among college students for budget meals."
+    ],
+    menuItems: [
+      { item: "Pan Fried Chicken Momo (6 pcs)", price: "₹130" },
+      { item: "Steam Chicken Momo (6 pcs)", price: "₹90" },
+      { item: "Crispy Chilli Chicken", price: "₹190" },
+      { item: "Schezwan Fried Rice", price: "₹140" },
+      { item: "Mixed Gravy Noodles", price: "₹160" }
     ]
   },
   {
@@ -1210,6 +1298,12 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Special Attraction: 10 pieces of delicious Momos for only ₹70!",
       "Perfect for quick, cheap, and tasty evening snacks."
+    ],
+    menuItems: [
+      { item: "Steamed Momo (10 pcs)", price: "₹70" },
+      { item: "Fried Momo (10 pcs)", price: "₹80" },
+      { item: "Pan Fried Momo", price: "₹95" },
+      { item: "Chicken Thukpa", price: "₹90" }
     ]
   },
   {
@@ -1229,6 +1323,11 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Extremely popular in the morning; sells out very fast.",
       "Try their classic Sattu (Chatu) Kochuri."
+    ],
+    menuItems: [
+      { item: "Sattu (Chatur) Kochuri (2 pcs)", price: "₹10" },
+      { item: "Dal Kochuri with Alur Dom (2 pcs)", price: "₹10" },
+      { item: "Sweet Jilipi (Jalebi, 1 pc)", price: "₹5" }
     ]
   },
   {
@@ -1247,6 +1346,13 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Order their signature Macher Kochuri (stuffed with spiced fish filling).",
       "Also try the Bhetki Macher Kochuri and standard Fish Fry."
+    ],
+    menuItems: [
+      { item: "Macher Kochuri (Fish Kochuri, 1 pc)", price: "₹45" },
+      { item: "Bhetki Macher Kochuri (1 pc)", price: "₹60" },
+      { item: "Bhetki Fish Fry (1 pc)", price: "₹110" },
+      { item: "Mutton Diamond Fry", price: "₹160" },
+      { item: "Brain Chop", price: "₹90" }
     ]
   },
   {
@@ -1265,6 +1371,12 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Known for pure ghee preparation.",
       "A must-visit for authentic North Indian style Daler Kochuri."
+    ],
+    menuItems: [
+      { item: "Daler Kochuri (Pure Ghee, 1 pc)", price: "₹20" },
+      { item: "Raj Bhog (1 pc)", price: "₹30" },
+      { item: "Samosa / Singara", price: "₹15" },
+      { item: "Special Lassi (Ghee/Malai)", price: "₹60" }
     ]
   },
   {
@@ -1283,6 +1395,12 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "The sweet Cholar Dal served with the Kochuri is highly addictive.",
       "Very fast service, perfect for daily commuters."
+    ],
+    menuItems: [
+      { item: "Hinger Kochuri with Dal (2 pcs)", price: "₹12" },
+      { item: "Radhaballavi with Alur Dom (2 pcs)", price: "₹16" },
+      { item: "Sweet Rasgulla (1 pc)", price: "₹8" },
+      { item: "Pantua / Ledikeni (1 pc)", price: "₹10" }
     ]
   },
   {
@@ -1301,6 +1419,13 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Their Pork Steam Momos and Fried Momos are highly viral.",
       "Expect a small queue in the evenings."
+    ],
+    menuItems: [
+      { item: "Steam Chicken Momo (6 pcs)", price: "₹80" },
+      { item: "Fried Chicken Momo (6 pcs)", price: "₹90" },
+      { item: "Pan Fried Pork Momo (6 pcs)", price: "₹120" },
+      { item: "Steam Pork Momo (6 pcs)", price: "₹100" },
+      { item: "Chicken Thukpa", price: "₹100" }
     ]
   },
   {
@@ -1319,13 +1444,20 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Try their special Lhasa steamed momos.",
       "A great premium option with beautiful modern seating."
+    ],
+    menuItems: [
+      { item: "Lhasa Steam Chicken Momo (6 pcs)", price: "₹160" },
+      { item: "Jhol Momo (6 pcs)", price: "₹180" },
+      { item: "Pork Kothay Momo (6 pcs)", price: "₹210" },
+      { item: "Bao (Chicken/Pork, 1 pc)", price: "₹150" },
+      { item: "Devil Momo (6 pcs)", price: "₹190" }
     ]
   },
   {
     id: "chitto-babur-dokan",
-    name: "Chitto Babur Dokan (Dacres Lane) - Fish Fry",
+    name: "Chitto Babur Dokan (Dacres Lane) - Fish Fry & Combo",
     category: "food",
-    description: "Legendary food stall in Dacres Lane (James Hickey Sarani), serving crispy Bhetki Fish Fry and hot Chicken Stew.",
+    description: "Legendary food stall in Dacres Lane (James Hickey Sarani), serving crispy Bhetki Fish Fry, combos, and hot Chicken Stew.",
     nearestMetro: "Esplanade",
     googleMapsUrl: "https://maps.google.com/?q=Chitto+Babur+Dokan+Dacres+Lane+Kolkata",
     price: "₹80 per piece",
@@ -1337,6 +1469,13 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Their Bhetki Fish Fry is freshly fried in front of you.",
       "One of the oldest office-para street food hubs."
+    ],
+    menuItems: [
+      { item: "Bhetki Fish Fry (1 pc)", price: "₹80" },
+      { item: "Chicken Stew with Toast (2 pcs)", price: "₹90" },
+      { item: "Mutton Stew with Toast", price: "₹130" },
+      { item: "Egg Toast", price: "₹25" },
+      { item: "Milk Tea / Coffee", price: "₹15" }
     ]
   },
   {
@@ -1355,6 +1494,13 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Opens only in the evening (after 4:30 PM).",
       "Expect a huge crowd waiting for fresh fries."
+    ],
+    menuItems: [
+      { item: "Bhetki Fish Fry (1 pc)", price: "₹70" },
+      { item: "Fish Finger (1 pc)", price: "₹25" },
+      { item: "Mutton Chop (1 pc)", price: "₹40" },
+      { item: "Egg Devil (1 pc)", price: "₹30" },
+      { item: "Fish Kabiraji (1 pc)", price: "₹120" }
     ]
   },
   {
@@ -1373,6 +1519,112 @@ export const foodItems: FoodItem[] = [
     importantTips: [
       "Famous for being fried in pure clarified butter (ghee) which gives it a unique rich flavor.",
       "Historical favorite of royal families."
+    ],
+    menuItems: [
+      { item: "Special Ghee Bhetki Cutlet (1 pc)", price: "₹140" },
+      { item: "Prawn Cutlet (Ghee Fry, 1 pc)", price: "₹180" },
+      { item: "Chicken Cutlet (1 pc)", price: "₹110" },
+      { item: "Fish Roll (1 pc)", price: "₹130" }
+    ]
+  },
+  {
+    id: "dacres-lane-shambhu",
+    name: "Shambhu's Stall (Dacres Lane) - Combo & Toast",
+    category: "food",
+    description: "Extremely popular office-para street joint in Dacres Lane, famous for its viral combo of butter toast, double poached eggs, and hot tea/coffee.",
+    nearestMetro: "Esplanade",
+    googleMapsUrl: "https://maps.google.com/?q=Shambhu+Stall+Dacres+Lane+Kolkata",
+    price: "₹30 - ₹50 per combo",
+    image: "",
+    detailedRoute: [
+      "Exit at Esplanade Metro Station.",
+      "Walk 5 minutes to Dacres Lane. Look for Shambhu's stall on the left side corner."
+    ],
+    importantTips: [
+      "Perfect spot for quick local office breakfast.",
+      "Try their viral Butter Toast with double poached eggs."
+    ],
+    menuItems: [
+      { item: "Butter Toast (2 pcs)", price: "₹20" },
+      { item: "Double Poached Eggs", price: "₹25" },
+      { item: "Egg Poach & Toast Combo", price: "₹40" },
+      { item: "Milk Tea / Black Tea", price: "₹10" },
+      { item: "Hot Coffee", price: "₹15" }
+    ]
+  },
+  {
+    id: "milan-da-canteen",
+    name: "JU Milan da's Canteen (Jadavpur)",
+    category: "food",
+    description: "Legendary student hangout canteen in Jadavpur University, viral for its cheap noodles, chicken rolls, and the classic 'Dhosa' combos.",
+    nearestMetro: "Mahanayak Uttam Kumar (then take auto to JU 8B)",
+    googleMapsUrl: "https://maps.google.com/?q=Milan+Da+Canteen+Jadavpur+University+Kolkata",
+    price: "₹20 - ₹60 per combo",
+    image: "",
+    detailedRoute: [
+      "De-board at Mahanayak Uttam Kumar Metro Station.",
+      "Take auto to Jadavpur 8B bus stand.",
+      "Enter Jadavpur University main campus gate. Walk towards the canteen near the science building."
+    ],
+    importantTips: [
+      "Super student friendly prices.",
+      "Try the Egg-Chicken noodles combo."
+    ],
+    menuItems: [
+      { item: "Chicken Noodles", price: "₹50" },
+      { item: "Egg Noodles", price: "₹40" },
+      { item: "Veg Dhosa with Chutney", price: "₹30" },
+      { item: "Chicken Roll", price: "₹35" },
+      { item: "Milan da's Special Milk Tea", price: "₹10" }
+    ]
+  },
+  {
+    id: "mouchak-jadavpur",
+    name: "Mouchak (Jadavpur) - Kochuri & Radhaballavi",
+    category: "food",
+    description: "A famous sweet and breakfast chain in South Kolkata, highly crowded in the morning for hot Hinger Kochuri and Radhaballavi served with cholar dal.",
+    nearestMetro: "Mahanayak Uttam Kumar",
+    googleMapsUrl: "https://maps.google.com/?q=Mouchak+Jadavpur+Kolkata",
+    price: "₹25 per plate (2 pieces)",
+    image: "",
+    detailedRoute: [
+      "De-board at Mahanayak Uttam Kumar Metro Station.",
+      "Take shared auto towards Jadavpur 8B. Get down at Jadavpur crossing."
+    ],
+    importantTips: [
+      "Fresh kachoris are served until 11:30 AM.",
+      "Pair your kochuri with their signature Kulfi or sweet Sondesh."
+    ],
+    menuItems: [
+      { item: "Hinger Kochuri with Dal (2 pcs)", price: "₹25" },
+      { item: "Radhaballavi with Alur Dom (2 pcs)", price: "₹30" },
+      { item: "Special Singara (Samosa, 1 pc)", price: "₹12" },
+      { item: "Kulfi (1 cup)", price: "₹40" }
+    ]
+  },
+  {
+    id: "bedwin-jadavpur",
+    name: "Bedwin (Jadavpur 8B) - Mughlai Combos",
+    category: "food",
+    description: "A famous Mughlai joint at Jadavpur 8B crossing, viral for its Mughlai Paratha combos, egg rolls, and biryani.",
+    nearestMetro: "Mahanayak Uttam Kumar",
+    googleMapsUrl: "https://maps.google.com/?q=Bedwin+Jadavpur+Kolkata",
+    price: "₹100 - ₹200 for combos",
+    image: "",
+    detailedRoute: [
+      "De-board at Mahanayak Uttam Kumar Metro Station.",
+      "Take shared auto to Jadavpur 8B crossing. Bedwin is right on the corner."
+    ],
+    importantTips: [
+      "Known for serving dry, crispy Mughlai parathas.",
+      "Excellent take-away joint in Jadavpur."
+    ],
+    menuItems: [
+      { item: "Mughlai Paratha with Alur Dom", price: "₹120" },
+      { item: "Egg Mughlai Paratha", price: "₹90" },
+      { item: "Chicken Roll", price: "₹60" },
+      { item: "Mutton Egg Roll", price: "₹80" },
+      { item: "Chicken Biryani combo", price: "₹190" }
     ]
   }
 ];
